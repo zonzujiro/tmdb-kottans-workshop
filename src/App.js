@@ -1,18 +1,30 @@
 import React from 'react';
+import { connect } from 'react-redux';
+
+import { changeRole, ROLES } from './redux/roles';
+
 import logo from './logo.svg';
 import './App.css';
 
-import { getMovies } from './api/api';
+const mapStateToProps = state => ({
+  role: state.roles.current,
+});
 
-getMovies().then(console.log);
+const mapDispatchToProps = {
+  changeRole,
+};
 
-function App() {
+function App({ role, changeRole }) {
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          {role}
+
+          <button onClick={() => changeRole(ROLES.ADMIN)}>
+            DON'T PRESS THIS BUTTON!
+          </button>
         </p>
         <a
           className="App-link"
@@ -26,4 +38,7 @@ function App() {
   );
 }
 
-export default App;
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);
