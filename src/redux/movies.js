@@ -22,7 +22,12 @@ const fetchMoviesCompleted = movies => ({
 });
 
 export default (state = initialState, action) => {
-  return state;
+  switch (action.type) {
+    case FETCH_MOVIES_COMPLETED:
+      return { ...state, ...action.payload };
+    default:
+      return state;
+  }
 };
 
 export const getMovies = () => async dispatch => {

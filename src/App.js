@@ -21,6 +21,9 @@ class App extends React.Component {
   }
 
   render() {
+    const {movies} = this.props;
+    console.log({movies})
+
     return (
       <div className="App">
         <header className="App-header">
