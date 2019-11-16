@@ -1,23 +1,27 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, SuspenseList } from "react";
 
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
 
-import { getMoviesData } from './api/api';
+import { getMoviesData } from "./api/api";
+import Image from "./Image";
 
 const moviesResource = getMoviesData();
 
 const Movies = () => {
   const movies = moviesResource.movies.read();
 
-  // Uncomment to break Suspense resource tracking
-  // const timeOut = moviesResource.timeOut.read(true);
-
   return (
-    <ul>
-      {movies.map((movie, index) => (
-        <li key={index}>Some movie</li>
-      ))}
+    <ul style={{ display: "flex", flexWrap: "wrap" }}>
+      <SuspenseList reveal>
+        {movies.map((movie, index) => (
+          <Suspense fallback={<p>Load image...</p>} key={index}>
+            <section>
+              <Image src={movie.poster_path} />
+            </section>
+          </Suspense>
+        ))}
+      </SuspenseList>
     </ul>
   );
 };
@@ -25,12 +29,9 @@ const Movies = () => {
 const App = () => {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Suspense resource={moviesResource} fallback={<h1>Loading...</h1>}>
-          <Movies />
-        </Suspense>
-      </header>
+      <Suspense fallback={<img src={logo} className="App-logo" alt="logo" />}>
+        <Movies />
+      </Suspense>
     </div>
   );
 };
