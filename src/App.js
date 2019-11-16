@@ -1,47 +1,39 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { Suspense, SuspenseList } from "react";
 
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
 
-import { getMovies } from './redux/movies';
+import { getMoviesData } from "./api/api";
+import Image from "./Image";
 
-const mapStateToProps = state => ({
-  movies: state.movies.list,
-  isLoading: state.movies.isLoading,
-});
+const moviesResource = getMoviesData();
 
-const mapDispatchToProps = {
-  getMovies,
+const Movies = () => {
+  const movies = moviesResource.movies.read();
+
+  return (
+    <ul style={{ display: "flex", flexWrap: "wrap" }}>
+      <SuspenseList reveal>
+        {movies.map((movie, index) => (
+          <Suspense fallback={<p>Load image...</p>} key={index}>
+            <section>
+              <Image src={movie.poster_path} />
+            </section>
+          </Suspense>
+        ))}
+      </SuspenseList>
+    </ul>
+  );
 };
 
-class App extends React.Component {
-  componentDidMount() {
-    this.props.getMovies();
-  }
+const App = () => {
+  return (
+    <div className="App">
+      <Suspense fallback={<img src={logo} className="App-logo" alt="logo" />}>
+        <Movies />
+      </Suspense>
+    </div>
+  );
+};
 
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer">
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App);
+export default App;
